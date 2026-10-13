@@ -1,0 +1,45 @@
+# --- secrets -----------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# --- runtime artifacts -------------------------------------------------------
+data/*.db
+data/*.db-journal
+data/logs/*.log
+data/logs/*.jsonl
+data/exports/*
+!data/exports/.gitkeep
+data/synthetic/*
+!data/synthetic/.gitkeep
+
+# --- python ------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+ENV/
+
+# --- tests / tooling ---------------------------------------------------------
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# --- experiments -------------------------------------------------------------
+experiments/results/*
+!experiments/results/.gitkeep
+!experiments/configs/*.yaml
+
+# --- editors / os ------------------------------------------------------------
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

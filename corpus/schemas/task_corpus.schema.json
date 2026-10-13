@@ -1,0 +1,312 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "ActionPolicy": {
+      "additionalProperties": false,
+      "description": "One entry of the task's allow/deny list for simulated tool actions.",
+      "properties": {
+        "tool": {
+          "title": "Tool",
+          "type": "string"
+        },
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "permission": {
+          "$ref": "#/$defs/PermissionLevel",
+          "default": "read_only"
+        },
+        "reason": {
+          "default": "",
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "action"
+      ],
+      "title": "ActionPolicy",
+      "type": "object"
+    },
+    "CriterionKind": {
+      "enum": [
+        "response_contains",
+        "response_not_contains",
+        "response_regex",
+        "plan_step_done",
+        "no_policy_violation",
+        "guard_rejected"
+      ],
+      "title": "CriterionKind",
+      "type": "string"
+    },
+    "DeliveryChannel": {
+      "description": "Simulated tool the hostile payload rides in on.",
+      "enum": [
+        "web",
+        "browser",
+        "email",
+        "file",
+        "calendar",
+        "database",
+        "api"
+      ],
+      "title": "DeliveryChannel",
+      "type": "string"
+    },
+    "Difficulty": {
+      "enum": [
+        "easy",
+        "medium",
+        "hard"
+      ],
+      "title": "Difficulty",
+      "type": "string"
+    },
+    "PermissionLevel": {
+      "description": "Capability tier of a simulated tool action.",
+      "enum": [
+        "read_only",
+        "limited_write",
+        "high_risk"
+      ],
+      "title": "PermissionLevel",
+      "type": "string"
+    },
+    "PlanStep": {
+      "additionalProperties": false,
+      "description": "A reference step: the canonical way to complete the task.",
+      "properties": {
+        "step": {
+          "title": "Step",
+          "type": "integer"
+        },
+        "tool": {
+          "title": "Tool",
+          "type": "string"
+        },
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "arguments": {
+          "additionalProperties": true,
+          "title": "Arguments",
+          "type": "object"
+        },
+        "purpose": {
+          "default": "",
+          "title": "Purpose",
+          "type": "string"
+        },
+        "required": {
+          "default": true,
+          "title": "Required",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "step",
+        "tool",
+        "action"
+      ],
+      "title": "PlanStep",
+      "type": "object"
+    },
+    "TaskCriterion": {
+      "additionalProperties": false,
+      "description": "A single machine-checkable condition contributing to task utility.",
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/CriterionKind"
+        },
+        "value": {
+          "default": "",
+          "title": "Value",
+          "type": "string"
+        },
+        "weight": {
+          "default": 1.0,
+          "title": "Weight",
+          "type": "number"
+        },
+        "case_sensitive": {
+          "default": false,
+          "title": "Case Sensitive",
+          "type": "boolean"
+        },
+        "tool": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool"
+        },
+        "action": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Action"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "TaskCriterion",
+      "type": "object"
+    },
+    "TaskDefinition": {
+      "additionalProperties": false,
+      "description": "A synthetic, harmless benchmark task.",
+      "properties": {
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "user_prompt": {
+          "title": "User Prompt",
+          "type": "string"
+        },
+        "expected_outcome": {
+          "title": "Expected Outcome",
+          "type": "string"
+        },
+        "allowed_tools": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Tools",
+          "type": "array"
+        },
+        "allowed_actions": {
+          "items": {
+            "$ref": "#/$defs/ActionPolicy"
+          },
+          "title": "Allowed Actions",
+          "type": "array"
+        },
+        "forbidden_actions": {
+          "items": {
+            "$ref": "#/$defs/ActionPolicy"
+          },
+          "title": "Forbidden Actions",
+          "type": "array"
+        },
+        "allowed_side_effects": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Side Effects",
+          "type": "array"
+        },
+        "criteria": {
+          "items": {
+            "$ref": "#/$defs/TaskCriterion"
+          },
+          "title": "Criteria",
+          "type": "array"
+        },
+        "reference_plan": {
+          "items": {
+            "$ref": "#/$defs/PlanStep"
+          },
+          "title": "Reference Plan",
+          "type": "array"
+        },
+        "channels": {
+          "items": {
+            "$ref": "#/$defs/DeliveryChannel"
+          },
+          "title": "Channels",
+          "type": "array"
+        },
+        "difficulty": {
+          "$ref": "#/$defs/Difficulty",
+          "default": "easy"
+        },
+        "ground_truth": {
+          "additionalProperties": true,
+          "title": "Ground Truth",
+          "type": "object"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "version": {
+          "default": "1.0.0",
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "task_id",
+        "name",
+        "description",
+        "user_prompt",
+        "expected_outcome"
+      ],
+      "title": "TaskDefinition",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "corpus_version": {
+      "default": "1.0.0",
+      "title": "Corpus Version",
+      "type": "string"
+    },
+    "description": {
+      "default": "",
+      "title": "Description",
+      "type": "string"
+    },
+    "generated_by": {
+      "default": "IPI Test Range project",
+      "title": "Generated By",
+      "type": "string"
+    },
+    "tasks": {
+      "items": {
+        "$ref": "#/$defs/TaskDefinition"
+      },
+      "title": "Tasks",
+      "type": "array"
+    }
+  },
+  "required": [
+    "tasks"
+  ],
+  "title": "TaskCorpus",
+  "type": "object"
+}

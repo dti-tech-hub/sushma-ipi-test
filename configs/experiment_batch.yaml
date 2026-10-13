@@ -1,0 +1,33 @@
+# =============================================================================
+# Batch experiment profile - "one model against the whole corpus"
+# Used by: python -m scripts.run_batch --config configs/experiment_batch.yaml
+# =============================================================================
+profile: "batch_corpus_v1"
+description: "Sweep the full attack corpus for every registered model under every defense."
+
+selection:
+  attack_ids: null        # null = all attacks
+  attack_types: null      # e.g. ["goal_hijacking", "data_exfiltration"]
+  severities: null        # e.g. ["high", "critical"]
+  difficulties: null
+  delivery_channels: null # e.g. ["email", "web"]
+  task_ids: null
+
+models:
+  - provider: "mock"
+    name: "mock-vulnerable"
+  - provider: "mock"
+    name: "mock-hardened"
+
+defenses:
+  - "none"
+  - "sanitization"
+  - "guard_classifier"
+
+execution:
+  repetitions: 3
+  random_seed: 1337
+  max_steps: 10
+
+logging:
+  level: "INFO"

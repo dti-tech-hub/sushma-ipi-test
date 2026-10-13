@@ -1,0 +1,68 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ipi-test-range"
+version = "1.0.0"
+description = "Indirect Prompt Injection Test Range - a sandboxed, reproducible benchmark for tool-using LLM agents"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Academic research use" }
+
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.27",
+    "pydantic>=2.6",
+    "python-dotenv>=1.0",
+    "PyYAML>=6.0",
+    "streamlit>=1.50",
+    "plotly>=5.18",
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "SQLAlchemy>=2.0",
+    "langchain>=0.1",
+    "langchain-core>=0.1",
+]
+
+[project.optional-dependencies]
+live = ["openai>=1.0", "anthropic>=0.25"]
+dev = ["pytest>=8.0", "pytest-cov>=4.1", "httpx>=0.26"]
+
+[tool.setuptools]
+packages = [
+    "backend",
+    "backend.api",
+    "backend.agents",
+    "backend.agents.providers",
+    "backend.attacks",
+    "backend.database",
+    "backend.defenses",
+    "backend.evaluation",
+    "backend.models",
+    "backend.scoring",
+    "backend.services",
+    "backend.tools",
+    "scripts",
+]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+pythonpath = ["."]
+filterwarnings = [
+    "ignore::DeprecationWarning:streamlit.*",
+    "ignore:.*use_container_width.*:DeprecationWarning",
+]
+markers = [
+    "slow: long running integration tests",
+]
+
+[tool.coverage.run]
+source = ["backend"]
+omit = ["*/__pycache__/*"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"

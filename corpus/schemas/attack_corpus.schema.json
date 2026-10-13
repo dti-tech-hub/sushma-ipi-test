@@ -1,0 +1,391 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "AttackRecord": {
+      "additionalProperties": false,
+      "description": "One scored synthetic attack.",
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "attack_type": {
+          "$ref": "#/$defs/AttackType"
+        },
+        "delivery_channel": {
+          "$ref": "#/$defs/DeliveryChannel"
+        },
+        "payload": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "items": {},
+              "type": "array"
+            }
+          ],
+          "title": "Payload"
+        },
+        "injection_position": {
+          "$ref": "#/$defs/InjectionPosition"
+        },
+        "format": {
+          "$ref": "#/$defs/PayloadFormat"
+        },
+        "target_action": {
+          "$ref": "#/$defs/TargetAction"
+        },
+        "difficulty": {
+          "$ref": "#/$defs/Difficulty"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity"
+        },
+        "expected_behavior": {
+          "title": "Expected Behavior",
+          "type": "string"
+        },
+        "safe_simulation": {
+          "title": "Safe Simulation",
+          "type": "string"
+        },
+        "success_criteria": {
+          "items": {
+            "$ref": "#/$defs/SuccessPredicate"
+          },
+          "title": "Success Criteria",
+          "type": "array"
+        },
+        "success_mode": {
+          "default": "all",
+          "title": "Success Mode",
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Tags",
+          "type": "array"
+        },
+        "compatible_tasks": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Compatible Tasks",
+          "type": "array"
+        },
+        "injection_options": {
+          "additionalProperties": true,
+          "title": "Injection Options",
+          "type": "object"
+        },
+        "version": {
+          "default": "1.0.0",
+          "title": "Version",
+          "type": "string"
+        },
+        "reference": {
+          "default": "",
+          "title": "Reference",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "description",
+        "attack_type",
+        "delivery_channel",
+        "payload",
+        "injection_position",
+        "format",
+        "target_action",
+        "difficulty",
+        "severity",
+        "expected_behavior",
+        "safe_simulation",
+        "success_criteria"
+      ],
+      "title": "AttackRecord",
+      "type": "object"
+    },
+    "AttackType": {
+      "description": "Top level taxonomy required by the project specification.",
+      "enum": [
+        "goal_hijacking",
+        "data_exfiltration",
+        "tool_misuse",
+        "instruction_override",
+        "obfuscation"
+      ],
+      "title": "AttackType",
+      "type": "string"
+    },
+    "DeliveryChannel": {
+      "description": "Simulated tool the hostile payload rides in on.",
+      "enum": [
+        "web",
+        "browser",
+        "email",
+        "file",
+        "calendar",
+        "database",
+        "api"
+      ],
+      "title": "DeliveryChannel",
+      "type": "string"
+    },
+    "Difficulty": {
+      "enum": [
+        "easy",
+        "medium",
+        "hard"
+      ],
+      "title": "Difficulty",
+      "type": "string"
+    },
+    "InjectionPosition": {
+      "enum": [
+        "beginning",
+        "middle",
+        "end",
+        "surrounding",
+        "metadata",
+        "html_comment",
+        "encoded"
+      ],
+      "title": "InjectionPosition",
+      "type": "string"
+    },
+    "PayloadFormat": {
+      "description": "How the payload is rendered inside the tool output.",
+      "enum": [
+        "visible_text",
+        "html_comment",
+        "metadata",
+        "base64",
+        "hex",
+        "rot13",
+        "urlencoded",
+        "zero_width",
+        "reversed",
+        "markdown_image",
+        "unicode_escape",
+        "spaced_leet"
+      ],
+      "title": "PayloadFormat",
+      "type": "string"
+    },
+    "PermissionLevel": {
+      "description": "Capability tier of a simulated tool action.",
+      "enum": [
+        "read_only",
+        "limited_write",
+        "high_risk"
+      ],
+      "title": "PermissionLevel",
+      "type": "string"
+    },
+    "PredicateKind": {
+      "description": "Observable conditions evaluated against a completed run.",
+      "enum": [
+        "tool_call",
+        "ledger_effect",
+        "response_matches",
+        "task_abandoned",
+        "policy_violation",
+        "response_refuses"
+      ],
+      "title": "PredicateKind",
+      "type": "string"
+    },
+    "Severity": {
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "title": "Severity",
+      "type": "string"
+    },
+    "SuccessPredicate": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/PredicateKind"
+        },
+        "tool": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tool"
+        },
+        "action": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Action"
+        },
+        "effect": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Effect"
+        },
+        "args_contain": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Args Contain",
+          "type": "object"
+        },
+        "pattern": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Pattern"
+        },
+        "regex": {
+          "default": false,
+          "title": "Regex",
+          "type": "boolean"
+        },
+        "case_sensitive": {
+          "default": false,
+          "title": "Case Sensitive",
+          "type": "boolean"
+        },
+        "threshold": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Threshold"
+        },
+        "weight": {
+          "default": 1.0,
+          "title": "Weight",
+          "type": "number"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "title": "SuccessPredicate",
+      "type": "object"
+    },
+    "TargetAction": {
+      "additionalProperties": false,
+      "description": "The simulated capability the attacker wants the agent to misuse.",
+      "properties": {
+        "tool": {
+          "title": "Tool",
+          "type": "string"
+        },
+        "action": {
+          "title": "Action",
+          "type": "string"
+        },
+        "permission": {
+          "$ref": "#/$defs/PermissionLevel",
+          "default": "high_risk"
+        },
+        "required_args": {
+          "additionalProperties": true,
+          "title": "Required Args",
+          "type": "object"
+        },
+        "description": {
+          "default": "",
+          "title": "Description",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "action"
+      ],
+      "title": "TargetAction",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "corpus_version": {
+      "default": "1.0.0",
+      "title": "Corpus Version",
+      "type": "string"
+    },
+    "description": {
+      "default": "",
+      "title": "Description",
+      "type": "string"
+    },
+    "generated_by": {
+      "default": "IPI Test Range project (synthetic payloads)",
+      "title": "Generated By",
+      "type": "string"
+    },
+    "attacks": {
+      "items": {
+        "$ref": "#/$defs/AttackRecord"
+      },
+      "title": "Attacks",
+      "type": "array"
+    }
+  },
+  "required": [
+    "attacks"
+  ],
+  "title": "AttackCorpus",
+  "type": "object"
+}
